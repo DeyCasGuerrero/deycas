@@ -29,6 +29,11 @@ export function proxy(request: NextRequest) {
 
   // Si existe cualquiera de los dos, consideramos al usuario autenticado (sin hacer consultas a la BD/API)
   const isAuthenticated = !!(refreshToken || accessToken);
+  
+  if (isAuthenticated &&  path === "/cms") {
+    const homeUrl = new URL("/cms/home", request.url);
+    return NextResponse.redirect(homeUrl);
+  }
 
   // 1. Si la ruta es protegida y el usuario NO está autenticado, lo redirigimos a /login
   const isProtectedRoute = PROTECTED_ROUTES.some((route) => path.startsWith(route));

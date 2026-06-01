@@ -41,7 +41,7 @@ export default function AboutSections() {
                     Hey, Hello there!
                 </h1>
                 <h2 className="text-3xl md:text-5xl font-bold text-center text-white">
-                    I'm Deyvis Castillo
+                    I'm Froggap
                 </h2>
                 <span className="text-2xl md:text-4xl text-center text-white">
                     A System Engineer and software developer
