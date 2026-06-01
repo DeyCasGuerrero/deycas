@@ -76,10 +76,10 @@ export default function CartWork() {
         <div className="flex flex-col gap-5 items-center bg-gray-100 px-2 pt-10 pb-4 rounded-lg w-96 h-full">
             <Image className="size-40 rounded-full" src={'https://avatars.githubusercontent.com/u/204729421?s=200&v=4'} alt="perfil company" width={1000} height={1000}></Image>
             <h2 className="text-3xl text-black">
-                Allen DostMen
+                Company
             </h2>
             <span className="text-xl text-center text-black">
-                Software Engineer at Allen Dost Men LLC
+                Software Engineer at Company LLC
             </span>
 
             <div className="flex flex-col gap-2 items-center w-full">

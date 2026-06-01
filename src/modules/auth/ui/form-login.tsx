@@ -1,7 +1,7 @@
 "use client"
 
 import { ChangeEvent, FormEvent, useState } from "react"
-import { useAuth } from "../context/auth-context"
+import { useAuth } from "../../../context/auth-context"
 
 export default function FormLogin() {
     const { login } = useAuth()

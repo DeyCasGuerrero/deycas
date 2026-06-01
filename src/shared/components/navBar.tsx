@@ -21,7 +21,7 @@ export default function NavBar() {
                 </div>
                 <div className="flex items-center justify-around w-96">
                     <div className="flex items-center gap-4 text-2xl">
-                        <Link href={'https://x.com/DeyTheRat'} target="_blank">
+                        <Link href={'https://x.com'} target="_blank">
                             <FaTwitter color="#1DA1F2" target="_blank"/>
                         </Link>
                         <Link href={''}>
@@ -30,10 +30,10 @@ export default function NavBar() {
                         <Link href={'https://open.spotify.com/user/ojxnqcygz7t4cl7fyj2zjkn5q?si=93765fe7ebb24e45'} target="_blank">
                             <FaSpotify color="#1ED760" />
                         </Link>
-                        <Link href={'https://www.twitch.tv/deytherat'} target="_blank"> 
+                        <Link href={'https://www.twitch.tv'} target="_blank"> 
                             <FaTwitch color="#9146FF" />
                         </Link>
-                        <Link href={'https://github.com/DeyCasGuerrero'} target="_blank">
+                        <Link href={'https://github.com'} target="_blank">
                             <FaGithub color="white"  />
                         </Link>
                     </div>
