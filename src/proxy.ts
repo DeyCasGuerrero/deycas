@@ -25,10 +25,10 @@ export function proxy(request: NextRequest) {
   // Como el refreshToken vive en una cookie httpOnly, el navegador la envía al servidor automáticamente en cada navegación.
   // Next.js proxy (al ejecutarse en el servidor) sí puede leer las cookies httpOnly sin problemas.
   const refreshToken = request.cookies.get(REFRESH_TOKEN_COOKIE_NAME)?.value;
-  const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME)?.value;
+  // const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME)?.value;
 
   // Si existe cualquiera de los dos, consideramos al usuario autenticado (sin hacer consultas a la BD/API)
-  const isAuthenticated = !!(refreshToken || accessToken);
+  const isAuthenticated = !!(refreshToken);
   
   if (isAuthenticated &&  path === "/cms") {
     const homeUrl = new URL("/cms/home", request.url);

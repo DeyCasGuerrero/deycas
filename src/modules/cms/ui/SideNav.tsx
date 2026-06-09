@@ -13,6 +13,8 @@ type SideNavProps = {
 const items = [
   { label: "Inicio", href: "/cms/home" },
   { label: "Website", href: "/cms/website" },
+  { label: "Tecnología", href: "/cms/technology" },
+  { label: "Trabajos", href: "/cms/jobs" },
   { label: "Blogs", href: "/cms/blogs" },
   { label: "Proyectos", href: "/cms/projects" },
   { label: "Settings", href: "/cms/Settings" },
