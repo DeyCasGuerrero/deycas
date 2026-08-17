@@ -2,82 +2,145 @@
 
 import FormSections from "@/shared/components/form/FormSections";
 import Selects from "@/shared/components/form/Selects";
-import { useState } from "react";
+import { SubmitEvent, useEffect, useState } from "react";
 import { Technology } from "../types/technology";
+import api from "@/shared/api/axios";
+import Form from "@/shared/components/form/Form";
 
 export default function TechnologySection() {
 
-    const [technologies, setTechnologies] = useState<string>('');
-    const [selectedCategory, setSelectedCategory] = useState<Technology>({
-        name: '',
-        tags: [],
-        technologies: []
-    });
+    const [technology, setTechnology] = useState<string>('');
+    const [category, setCategory] = useState<string>('');
+
+    const [technologyItem, setTechnologyItem] = useState<Technology[]>([]);
 
     const handleAddTechnology = () => {
-        console.log("Agregar tecnología:", selectedCategory.name, technologies);
-        if(selectedCategory.name && technologies){
-            setSelectedCategory((prev)=>{
- 
+        if (!category || !technology) return;
 
-                return{
-                    ...prev,
-                    name: prev.name,
-                    technologies: [...prev.technologies, technologies],
-                    tags: [...prev.tags, `${selectedCategory.name}-${technologies}`]
-                }
-            })
-        }
+        setTechnologyItem((prev) => {
+            const { technologies, isDuplicate } = addTechnology(prev, category, technology);
+            if (isDuplicate) {
+                alert("La tecnología ya existe en la categoría seleccionada.");
+                return prev;
+            }
+            return technologies;
+        })
+
     }
 
+    const addTechnology = (technologies: Technology[], category: string, technology: string): { technologies: Technology[], isDuplicate: boolean } => {
+        const categoryIndex = technologies.findIndex(
+            cat => cat.name === category
+        );
+
+        if (categoryIndex === -1) {
+            return {
+                isDuplicate: false,
+                technologies: [
+                    ...technologies,
+                    {
+                        name: category,
+                        technologies: [technology],
+                        tags: []
+                    }
+                ]
+            };
+        }
+
+        const categoryItem = technologies[categoryIndex];
+
+        if (categoryItem.technologies.includes(technology)) {
+            return {
+                isDuplicate: true,
+                technologies
+            };
+        }
+
+        return {
+            isDuplicate: false,
+            technologies: technologies.map((cat, index) =>
+                index === categoryIndex
+                    ? {
+                        ...cat,
+                        technologies: [
+                            ...cat.technologies,
+                            technology
+                        ]
+                    }
+                    : cat
+            )
+        };
+    }
+
+    useEffect(() => {
+        console.log("technologyItem cambió:", technologyItem);
+    }, [technologyItem]);
+
+
+    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log("xd", e);
+        const res = await api.post("http://localhost:3001/api/v1/technology/add", { technologyItem })
+    }
 
     return (
         <>
-        <FormSections title="Sección Tecnología">
-            <Selects 
-                value={selectedCategory.name}
-                label="Categoría de Tecnología"
-                onChange={(value) => setSelectedCategory((prev) => ({ ...prev, name: value }))}
-                name="tech_category"
-                iconName="FaCode"
-                placeholder="Selecciona una categoría"
-                options={[
-                    { label: "Lenguajes", value: "languages", iconName: "FaTerminal" },
-                    { label: "Frameworks / Librerías", value: "frameworks", iconName: "FaReact" },
-                    { label: "Herramientas", value: "tools", iconName: "FaTools" },
-                    { label: "Servicios Cloud", value: "cloud", iconName: "FaCloud" },
-                ]}
-            />
-            <Selects
-                label="Tecnología"
-                name="technology"
-                value={technologies!}
-                onChange={(value)=> setTechnologies(value)}
-                placeholder="Selecciona una tecnología"
-                options={[
-                    { label: "JavaScript", value: "javascript", iconName: "FaJs" },
-                    { label: "TypeScript", value: "typescript", iconName: "BsTypescript" },
-                    { label: "Python", value: "python", iconName: "FaPython" },
-                    { label: "Java", value: "java", iconName: "FaJava" },
-                ]}
-            />
-            <button type="button" className="bg-red-400 text-white p-2 rounded-lg cursor-pointer hover:bg-red-500" onClick={() => handleAddTechnology()}>
-                Agregar Tecnología
-            </button>
-        </FormSections>
+            <Form onSubmit={handleSubmit}>
+                <FormSections title="Sección Tecnología">
+                    <Selects
+                        value={category}
+                        label="Categoría de Tecnología"
+                        onChange={(value) => setCategory(value)}
+                        name="tech_category"
+                        iconName="FaCode"
+                        placeholder="Selecciona una categoría"
+                        options={[
+                            { label: "Lenguajes", value: "languages", iconName: "FaTerminal" },
+                            { label: "Frameworks / Librerías", value: "frameworks", iconName: "FaReact" },
+                            { label: "Herramientas", value: "tools", iconName: "FaTools" },
+                            { label: "Servicios Cloud", value: "cloud", iconName: "FaCloud" },
+                        ]}
+                    />
+                    <Selects
+                        label="Tecnología"
+                        name="technology"
+                        value={technology}
+                        onChange={(value) => setTechnology(value)}
+                        placeholder="Selecciona una tecnología"
+                        options={[
+                            { label: "JavaScript", value: "javascript", iconName: "FaJs" },
+                            { label: "TypeScript", value: "typescript", iconName: "BsTypescript" },
+                            { label: "Python", value: "python", iconName: "FaPython" },
+                            { label: "Java", value: "java", iconName: "FaJava" },
+                        ]}
+                    />
+                    <div className="flex gap-4">
+                        <button type="button" className="bg-red-400 text-white p-2 rounded-lg cursor-pointer hover:bg-red-500" onClick={() => handleAddTechnology()}>
+                            Agregar Tecnología
+                        </button>
+                        <button type="submit" className="bg-green-400 text-white p-2 rounded-lg cursor-pointer hover:bg-green-500">
+                            Enviar Tecnología
+                        </button>
+                    </div>
+                </FormSections>
+            </Form>
 
-        <div className="">
-            {selectedCategory.technologies.length > 0 && (
-                <div className="mt-4">
-                    <h4 className="text-lg font-semibold mb-2">{selectedCategory.name}</h4>
-                    <ul className="list-disc list-inside">
-                        {selectedCategory.technologies.map((tech, index) => (
-                            <li key={index}>{tech}</li>
+            <div className="">
+                {technologyItem.length > 0 && (
+                    <div className="mt-4 grid grid-cols-4 gap-4">
+                        {technologyItem.map((cat, index) => (
+                            <div key={index} className="bg-slate-200 border-2 border-gray-200 px-4 py-2 rounded-lg">
+                                <h3 className="text-lg font-semibold">{cat.name}</h3>
+                                <ul className="list-disc list-inside">
+                                    {cat.technologies.map((tech, techIndex) => (
+                                        <li key={techIndex}>{tech}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         ))}
-                    </ul>
-                </div>
-            )}
-        </div>
+                    </div>
+                )}
+            </div>
         </>
     )
 }
