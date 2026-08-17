@@ -26,6 +26,7 @@ export function setUpAxiosInterceptors(axiosClient: AxiosInstance) {
     axiosClient.interceptors.request.use(
         (config) => {
             const accessToken = TokenManager.getAccessToken();
+            console.log("Access Token en interceptor:", accessToken);
             if (accessToken) {
                 config.headers.Authorization = `Bearer ${accessToken}`;
             }
@@ -50,7 +51,7 @@ export function setUpAxiosInterceptors(axiosClient: AxiosInstance) {
             return response;
         },
         async (error) => {
-            if(axios.isAxiosError(error) || !error.config){
+            if(!axios.isAxiosError(error) || !error.config){
                 return Promise.reject(error);
             }
             
@@ -61,7 +62,7 @@ export function setUpAxiosInterceptors(axiosClient: AxiosInstance) {
                 return Promise.reject(error);
             }
 
-            if(error.response.status !== 401){
+            if(error.response?.status !== 401){
                 return Promise.reject(error);
             }
 

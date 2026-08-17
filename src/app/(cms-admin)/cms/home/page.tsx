@@ -4,7 +4,7 @@ import { useAuth } from "@/context/auth-context"
 import Link from "next/link"
 
 export default function Home() {
-    const {user, accessToken}= useAuth()
+    const {user}= useAuth()
     return (
         <div>
             Hello {user?.username}! Welcome to the CMS Dashboard.

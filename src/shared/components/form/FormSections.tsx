@@ -12,7 +12,7 @@ type FormSectionsProps = {
 
 export default function FormSections({ title, description, children, className }: FormSectionsProps) {
   return (
-    <section className={cn("rounded-2xl border border-slate-200 bg-slate-50/80 p-5 dark:border-slate-800 dark:bg-slate-900/50", className)}>
+    <form className={cn("rounded-2xl border border-slate-200 bg-slate-50/80 p-5 dark:border-slate-800 dark:bg-slate-900/50", className)}>
       {(title || description) ? (
         <header className="mb-4 space-y-1">
           {title ? <h3 className="text-base font-semibold text-slate-900 dark:text-white">{title}</h3> : null}
@@ -20,6 +20,6 @@ export default function FormSections({ title, description, children, className }
         </header>
       ) : null}
       <div className="space-y-4">{children}</div>
-    </section>
+    </form>
   );
 }
