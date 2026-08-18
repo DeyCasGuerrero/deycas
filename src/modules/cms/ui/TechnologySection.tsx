@@ -58,7 +58,7 @@ export default function TechnologySection() {
 
         const categoryItem = technologies[categoryIndex];
 
-        if (categoryItem.technologies.includes(technology)) {
+        if (categoryItem?.name === category && categoryItem.technologies?.some(t => t.name === technology.name)) {
             return {
                 isDuplicate: true,
                 technologies
@@ -76,7 +76,7 @@ export default function TechnologySection() {
                             {
                                 name: technology.name,
                                 icon: technology.icon ?? null,
-    
+
                             }
                         ]
                     }
@@ -86,14 +86,46 @@ export default function TechnologySection() {
     }
 
     useEffect(() => {
-        addTechnology(technologyItem, category, technology as techItem);
-    }, [category]);
+        fetchTechnologies();
+    }, []);
 
 
-    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    const fetchTechnologies = async () => {
+        try {
+            const techs = await api.get("http://localhost:3001/api/v1/technology/all");
+            setTechnologyItem(techs.data);
+        } catch (error) {
+            console.error("Error fetching technologies:", error);
+        }
+    }
+
+    const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("xd", technologyItem);
-        const res = await api.post("http://localhost:3001/api/v1/technology/save", technologyItem)
+        if (technologyItem.length <= 0) {
+            handleCreateTechnology();
+        } else {
+            handleUpdateTechnology();
+        }
+    }
+
+
+    const handleCreateTechnology = async () => {
+        try {
+            await api.post("http://localhost:3001/api/v1/technology/save", technologyItem)
+
+        } catch (error) {
+            console.error("Error creating technology:", error);
+        }
+
+    }
+
+
+    const handleUpdateTechnology = async () => {
+        try {
+            const response = await api.put("http://localhost:3001/api/v1/technology/update", technologyItem);
+        } catch (error) {
+            console.error("Error updating technology:", error);
+        }
     }
 
     return (
@@ -118,7 +150,7 @@ export default function TechnologySection() {
                         label="Tecnología"
                         name="technology"
                         value={technology?.name || ""}
-                        onChange={(value) => setTechnology({name:value})}
+                        onChange={(value) => setTechnology({ name: value })}
                         placeholder="Selecciona una tecnología"
                         options={[
                             { label: "JavaScript", value: "javascript", iconName: "FaJs" },

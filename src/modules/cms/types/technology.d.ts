@@ -1,4 +1,6 @@
-export interface Technology {
+import { BaseResponse } from "./base";
+
+export interface Technology extends BaseResponse {
     name: string;
     technologies: techItem[];
     tags: string[];

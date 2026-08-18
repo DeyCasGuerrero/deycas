@@ -34,10 +34,32 @@ export const TokenManager = {
         _user = null;
         notify();
     },
-    subscribe: (listener: () => void): () => void => {
+    subscribe: (listener: () => void): (() => void) => {
         _listeners.add(listener);
         return () => {
             _listeners.delete(listener);
         };
+    },
+    waitForToken: (timeoutMs = 10000): Promise<string> => {
+        const token = _accessToken;
+        if (token) return Promise.resolve(token);
+
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                unsubscribe();
+                reject(new Error("Token wait timeout"));
+            }, timeoutMs);
+
+            const listener = () => {
+                if (_accessToken) {
+                    clearTimeout(timeout);
+                    unsubscribe();
+                    resolve(_accessToken);
+                }
+            };
+
+            _listeners.add(listener);
+            const unsubscribe = () => _listeners.delete(listener);
+        });
     }
 };

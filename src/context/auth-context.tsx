@@ -60,9 +60,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const refreshSession = async () => {
         try {
             // Under the hood, this axios post endpoint will return { accessToken, user } or { data: { accessToken, user } }
-            const response = await api.post("auth/refresh", {}, { withCredentials: true });
-            console.log("refreshSession response", response.data);
-            
+            const response = await api.post("auth/refresh", {}, { withCredentials: true , silentToast: true});            
+
             const resData = response.data?.data || response.data;
             const newToken = resData?.accessToken || resData?.token;
             const userData = resData?.user;

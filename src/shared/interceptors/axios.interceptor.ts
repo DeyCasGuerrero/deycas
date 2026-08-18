@@ -30,12 +30,17 @@ const processQueue = (error: Error | null = null, token:string | null = null)=>{
 
 export function setUpAxiosInterceptors(axiosClient: AxiosInstance) {
     axiosClient.interceptors.request.use(
-        (config) => {
-            const accessToken = TokenManager.getAccessToken();
-            console.log("Access Token en interceptor:", accessToken);
-            if (accessToken) {
-                config.headers.Authorization = `Bearer ${accessToken}`;
+        async (config) => {
+            const url = config.url ?? "";
+            const isAuthEndpoint = url.includes("login") || url.includes("refresh");
+
+            if (!isAuthEndpoint) {
+                const accessToken = await TokenManager.waitForToken().catch(() => null);
+                if (accessToken) {
+                    config.headers.Authorization = `Bearer ${accessToken}`;
+                }
             }
+
             return config;
         },
         (error) => {
@@ -56,7 +61,7 @@ export function setUpAxiosInterceptors(axiosClient: AxiosInstance) {
             }
 
             const cfg = response.config as CustomAxiosConfig;
-            if (!cfg.silentToast) {
+            if (!cfg.silentToast && !(response.config?.method === "get")) {
                 toast.success(cfg.successMessage ?? "Operación exitosa");
             }
 
