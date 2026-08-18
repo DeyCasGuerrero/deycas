@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Pixelify_Sans } from "next/font/google";
 import "../globals.css";
 import NavBar from "@/shared/components/navBar";
+import { Toaster } from "sonner";
 const pixelifySans = Pixelify_Sans({
   variable: "--font-pixelify-sans",
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
         style={{ background: 'url("https://i.pinimg.com/originals/87/b3/74/87b374a764bfa8f4ad403569455a9554.gif") 0% 0%', imageRendering: 'pixelated', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed', backgroundSize: 'cover' }}
       >
         <AuthProvider>
+          <Toaster richColors position="top-right" />
           <NavBar/>
           <main>
             {children}

@@ -3,13 +3,16 @@
 import FormSections from "@/shared/components/form/FormSections";
 import Selects from "@/shared/components/form/Selects";
 import { SubmitEvent, useEffect, useState } from "react";
-import { Technology } from "../types/technology";
+import { techItem, Technology } from "../types/technology";
 import api from "@/shared/api/axios";
 import Form from "@/shared/components/form/Form";
 
 export default function TechnologySection() {
 
-    const [technology, setTechnology] = useState<string>('');
+    const [technology, setTechnology] = useState<techItem | null>({
+        name: "",
+        icon: null,
+    });
     const [category, setCategory] = useState<string>('');
 
     const [technologyItem, setTechnologyItem] = useState<Technology[]>([]);
@@ -28,7 +31,8 @@ export default function TechnologySection() {
 
     }
 
-    const addTechnology = (technologies: Technology[], category: string, technology: string): { technologies: Technology[], isDuplicate: boolean } => {
+    const addTechnology = (technologies: Technology[], category: string, technology: techItem): { technologies: Technology[], isDuplicate: boolean } => {
+        console.log("addTechnology invoked with:", { technologies, category, technology });
         const categoryIndex = technologies.findIndex(
             cat => cat.name === category
         );
@@ -40,7 +44,12 @@ export default function TechnologySection() {
                     ...technologies,
                     {
                         name: category,
-                        technologies: [technology],
+                        technologies: [
+                            {
+                                name: technology.name,
+                                icon: technology.icon ?? null,
+                            }
+                        ],
                         tags: []
                     }
                 ]
@@ -64,7 +73,11 @@ export default function TechnologySection() {
                         ...cat,
                         technologies: [
                             ...cat.technologies,
-                            technology
+                            {
+                                name: technology.name,
+                                icon: technology.icon ?? null,
+    
+                            }
                         ]
                     }
                     : cat
@@ -73,14 +86,14 @@ export default function TechnologySection() {
     }
 
     useEffect(() => {
-        console.log("technologyItem cambió:", technologyItem);
-    }, [technologyItem]);
+        addTechnology(technologyItem, category, technology as techItem);
+    }, [category]);
 
 
     const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("xd", e);
-        const res = await api.post("http://localhost:3001/api/v1/technology/add", { technologyItem })
+        console.log("xd", technologyItem);
+        const res = await api.post("http://localhost:3001/api/v1/technology/save", technologyItem)
     }
 
     return (
@@ -104,8 +117,8 @@ export default function TechnologySection() {
                     <Selects
                         label="Tecnología"
                         name="technology"
-                        value={technology}
-                        onChange={(value) => setTechnology(value)}
+                        value={technology?.name || ""}
+                        onChange={(value) => setTechnology({name:value})}
                         placeholder="Selecciona una tecnología"
                         options={[
                             { label: "JavaScript", value: "javascript", iconName: "FaJs" },
@@ -133,7 +146,7 @@ export default function TechnologySection() {
                                 <h3 className="text-lg font-semibold">{cat.name}</h3>
                                 <ul className="list-disc list-inside">
                                     {cat.technologies.map((tech, techIndex) => (
-                                        <li key={techIndex}>{tech}</li>
+                                        <li key={techIndex}>{tech.name}</li>
                                     ))}
                                 </ul>
                             </div>

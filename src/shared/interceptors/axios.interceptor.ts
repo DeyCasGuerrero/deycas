@@ -2,6 +2,12 @@
 
 import { TokenManager } from '@/lib/token-manager';
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import { toast } from 'sonner';
+
+interface CustomAxiosConfig extends InternalAxiosRequestConfig {
+    silentToast?: boolean;
+    successMessage?: string;
+}
 
 
 let isRefreshing = false;
@@ -48,15 +54,27 @@ export function setUpAxiosInterceptors(axiosClient: AxiosInstance) {
             ) {
                 response.data = response.data.data;
             }
+
+            const cfg = response.config as CustomAxiosConfig;
+            if (!cfg.silentToast) {
+                toast.success(cfg.successMessage ?? "Operación exitosa");
+            }
+
             return response;
         },
         async (error) => {
             if(!axios.isAxiosError(error) || !error.config){
                 return Promise.reject(error);
             }
+
+            const errorCfg = error.config as CustomAxiosConfig;
+            if (!errorCfg.silentToast) {
+                const message = error.response?.data?.message ?? error.message ?? "Error inesperado";
+                toast.error(message);
+            }
             
 
-            const originalRequest = error.config as InternalAxiosRequestConfig & {_retry?: boolean};
+            const originalRequest = error.config as CustomAxiosConfig & {_retry?: boolean};
             
             if(originalRequest.url?.includes('login') || originalRequest.url?.includes('refresh')){
                 return Promise.reject(error);
@@ -98,6 +116,7 @@ export function setUpAxiosInterceptors(axiosClient: AxiosInstance) {
                 console.log("xdasdasdas", data)
 
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                originalRequest.silentToast = true;
                 return axiosClient(originalRequest);
             }catch (err) {
                 processQueue(new Error('Failed to refresh access token'), null);

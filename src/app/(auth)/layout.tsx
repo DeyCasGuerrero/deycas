@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Pixelify_Sans } from "next/font/google";
 import "../globals.css";
 import { AuthProvider } from "@/context/auth-context";
+import { Toaster } from "sonner";
 
 const pixelifySans = Pixelify_Sans({
   variable: "--font-pixelify-sans",
@@ -23,6 +24,7 @@ export default function AuthLayout({
     <html lang="en">
       <body className={`${pixelifySans.variable} antialiased min-h-screen bg-white dark:bg-slate-950`}>
         <AuthProvider>
+          <Toaster richColors position="top-right" />
           {children}
         </AuthProvider>
       </body>
