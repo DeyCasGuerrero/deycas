@@ -83,7 +83,6 @@ export function useCustomHook() {
                     const next = [...prev];
                     next.splice(cached.index, 0, cached.user);
                     return next;
-                    
                 });
 
                 userCached.current.delete(id);

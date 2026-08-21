@@ -1,6 +1,6 @@
 "use client"
 
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, SubmitEvent, useState } from "react"
 import { useAuth } from "../../../context/auth-context"
 
 export default function FormLogin() {
@@ -13,15 +13,15 @@ export default function FormLogin() {
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
 
-    const handleChange = (e:ChangeEvent<HTMLInputElement>)=>{
-        const {value, name} = e.target;
-        setAuth((prev)=>({
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value, name } = e.target;
+        setAuth((prev) => ({
             ...prev,
-            [name]:value
+            [name]: value
         }))
     }
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true)
         setError("")
@@ -52,10 +52,10 @@ export default function FormLogin() {
                         </div>
                         <div className="w-full flex flex-col gap-2">
                             <label className="font-semibold text-xs text-gray-400 ">Username</label>
-                            <input 
-                                className="border rounded-lg px-3 py-2 mb-5 text-sm w-full outline-none dark:border-gray-500 dark:bg-gray-900" 
+                            <input
+                                className="border rounded-lg px-3 py-2 mb-5 text-sm w-full outline-none dark:border-gray-500 dark:bg-gray-900"
                                 placeholder="email"
-                                name="email" 
+                                name="email"
                                 value={auth.email}
                                 onChange={handleChange}
                             />
@@ -64,13 +64,13 @@ export default function FormLogin() {
                     </div>
                     <div className="w-full flex flex-col gap-2">
                         <label className="font-semibold text-xs text-gray-400 ">Password</label>
-                        <input 
-                        type="password" 
-                        className="border rounded-lg px-3 py-2 mb-5 text-sm w-full outline-none dark:border-gray-500 dark:bg-gray-900" 
-                        placeholder="••••••••" 
-                        name="password"
-                        value={auth.password}
-                        onChange={handleChange}
+                        <input
+                            type="password"
+                            className="border rounded-lg px-3 py-2 mb-5 text-sm w-full outline-none dark:border-gray-500 dark:bg-gray-900"
+                            placeholder="••••••••"
+                            name="password"
+                            value={auth.password}
+                            onChange={handleChange}
                         />
 
                     </div>

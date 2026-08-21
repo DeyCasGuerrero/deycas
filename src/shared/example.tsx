@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useCustomHook } from "./useCustomHook";
 
 export interface User {
