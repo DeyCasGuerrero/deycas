@@ -36,7 +36,7 @@ export function useBlogs() {
 
     const createBlog = useCallback(async (payload: BlogPayload): Promise<Blog | null> => {
         try {
-            const response = await api.post(`${BLOG_API}/save`, payload);
+            const response = await api.post(`${BLOG_API}/create`, payload);
             setBlogs((prev) => [...prev, response.data]);
             return response.data;
         } catch (error) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, SubmitEvent, useEffect, useState } from "react";
 import Input from "@/shared/components/form/Input";
 import TextArea from "@/shared/components/form/TextArea";
 import Form from "@/shared/components/form/Form";
@@ -35,7 +35,7 @@ export default function BlogEditor({ blog, onSave, onCancel }: BlogEditorProps) 
         }
     }, [blog]);
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSaving(true);
         const tags = tagsInput
