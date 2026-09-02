@@ -24,7 +24,6 @@ export default function PageModule() {
                     <FileInput label="Elige el archivo" name="background" accept=".jpg,.jpeg,.png"></FileInput>
                 </FormSections>
                 <HeroSection></HeroSection>
-                <JobSection></JobSection>
             </Form>
         </div>
     );
